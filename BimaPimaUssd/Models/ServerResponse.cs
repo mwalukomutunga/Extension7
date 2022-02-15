@@ -16,11 +16,11 @@
         private string phoneNumber;
 
       //  public string input { get; set; }
-        public string PhoneNumber { get => phoneNumber.Trim().Replace("+", ""); set => phoneNumber = value; }
-        public string SessionId { get; set; }
-        public string ServiceCode { get; set; }
-        public string latitude { get; set; } = "0.7736336";
-        public string longitude { get; set; } = "2.7736336";
+        public string mobileNumber { get => phoneNumber.Trim().Replace("+", ""); set => phoneNumber = value; }
+        public string session_id { get; set; }
+        public string ussdCode { get; set; }
+        public string latitude { get; set; } 
+        public string longitude { get; set; } 
 
         //live
         //public string mobileNumber { get; set; }
@@ -30,7 +30,7 @@
         //public string ussdCode { get; set; }
         private string _input;
 
-        public string Text
+        public string input
         {
             get { return System.Web.HttpUtility.UrlDecode(_input?.TrimStart('*')); }
             set { _input = value; }

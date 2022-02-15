@@ -28,15 +28,15 @@ namespace BimaPimaUssd.Controllers
         [HttpPost()]
         public async Task<IActionResult> PostAsync([FromForm] ServerResponse serverResponse)
         {
-            serverResponse.Text = serverResponse.Text is null ? "" : serverResponse.Text;
+            serverResponse.input = serverResponse.input is null ? "" : serverResponse.input;
             await ProcessSession(serverResponse);
             if(!string.IsNullOrEmpty(serverResponse.latitude))
             {
-                _repository.Data[serverResponse.SessionId].latitude = serverResponse.latitude;
+                _repository.Data[serverResponse.session_id].latitude = serverResponse.latitude;
             }
             if (!string.IsNullOrEmpty(serverResponse.longitude))
             {
-                _repository.Data[serverResponse.SessionId].longitude = serverResponse.longitude;
+                _repository.Data[serverResponse.session_id].longitude = serverResponse.longitude;
             }
             string response = await ProcessBima(serverResponse);
             return Ok(response);
@@ -44,15 +44,15 @@ namespace BimaPimaUssd.Controllers
 
         private Task ProcessSession(ServerResponse serverResponse)
         {
-            if (!_repository.levels.ContainsKey(serverResponse.SessionId))
+            if (!_repository.levels.ContainsKey(serverResponse.session_id))
             {
-                _repository.Data.Add(serverResponse.SessionId, new ExpandoObject());
-                _repository.levels.Add(serverResponse.SessionId, new System.Collections.Generic.Stack<int>());
-                _repository.levels[serverResponse.SessionId].Push(0);
+                _repository.Data.Add(serverResponse.session_id, new ExpandoObject());
+                _repository.levels.Add(serverResponse.session_id, new System.Collections.Generic.Stack<int>());
+                _repository.levels[serverResponse.session_id].Push(0);
             }
-            var lastInput = serverResponse.Text.Split("*").Last();
-            if (!_repository.Requests.ContainsKey(serverResponse.SessionId)) _repository.Requests.Add(serverResponse.SessionId, new System.Collections.Generic.LinkedList<string>());
-             _repository.Requests[serverResponse.SessionId].AddLast(lastInput);
+            var lastInput = serverResponse.input.Split("*").Last();
+            if (!_repository.Requests.ContainsKey(serverResponse.session_id)) _repository.Requests.Add(serverResponse.session_id, new System.Collections.Generic.LinkedList<string>());
+             _repository.Requests[serverResponse.session_id].AddLast(lastInput);
             return Task.CompletedTask;
         }
         private Task<string> ProcessFTMA(ServerResponse serverResponse)

@@ -64,7 +64,7 @@ namespace BimaPimaUssd.Helpers
 
         internal static string CollectCode() => "CON Enter farmer code.\n";
 
-        internal static string LoadValueChains(string name) => $"CON Hi {name}!! Select crop\n 1. Maize\n2. Greengrams\n 3. Sorghum\n 4. Beans";
+        internal static string LoadValueChains(string name) => $"CON Hi {name}!! Select crop\n1. Maize\n2. Greengrams\n3. Sorghum\n4. Beans";
 
         internal static string TypeMonth() => "CON Select planting month.\n 1. January\n2. February\n3.March \n4. April \n5. May\n6. June\n7. July\n8.August\n9. September \n10. October \n11. November \n12.December";
 
@@ -77,13 +77,12 @@ namespace BimaPimaUssd.Helpers
             if (premium == 0) return "CON Please enter amount. Premium must be KES 50 and above\n";
             return $"CON Confirm. Pay Kes {premium - subsidy } for max KES {premium * rate} payout \n 1. Confirm\n 2. Cancel";
         }
-
         internal static string ProcessCash() => $"END Thank you for using our service. Find more details in your SMS";
         internal static string ProcessCancel() => $"END Thank you for using our service. Feel free to try again.";
 
         internal static string ProcessMpesa() => $"END Thank you\nEnter your MPESA PIN in the next prompt to complete the request";
 
-        internal static string GetAmount(string Amount) => $"CON  Select insurance cover\n 1. Pay Kes {Amount} for max KES 2000 payout\n 2. Pay amount above Kes 200";
+        internal static string GetAmount(decimal Amount) => $"CON  Select insurance cover\n 1. Pay Kes {200 - Amount} for max KES 2000 payout\n 2. Pay amount above Kes 200";
         internal static string GetPhone(string phone) => $"CON Select phone number to pay\n 1. {phone}\n 2. Enter new number.";
 
         internal static string EnterMpesaNo() => "CON ENter phone number";

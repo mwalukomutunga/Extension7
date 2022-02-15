@@ -26,11 +26,11 @@ namespace BimaPimaUssd.ViewModels
 
         public ActivationViewModel(ServerResponse serverResponse, IRepository repository, IPayment paymnt, IStoreDatabaseSettings settings)
         {
-            _Name = serverResponse.PhoneNumber;
+            _Name = serverResponse.mobileNumber;
             this.serverResponse = serverResponse;
             this.repository = repository;
             this.Payment = paymnt;
-            levels = repository.levels[serverResponse.SessionId];
+            levels = repository.levels[serverResponse.session_id];
             _repository = new Repository<Activation>(settings, "Activations");
             _service = new Repository<CardsSerial>(settings, "CardsSerial");
 
@@ -54,20 +54,20 @@ namespace BimaPimaUssd.ViewModels
         {
             get
             {
-                var str = repository.Requests[serverResponse.SessionId].Last.Value;
+                var str = repository.Requests[serverResponse.session_id].Last.Value;
                 if (string.IsNullOrEmpty(str)) return IFVM.InvalidCode;
                 var value = _service.GetByProperty("VoucherCode", str);
                 if (value is not null)
                 {
                     //add mpesa
                     //value.Denomination
-                    Payment.SendPayment(serverResponse.PhoneNumber, value.Denomination.ToString(),value.ProductName);
+                    Payment.SendPayment(serverResponse.mobileNumber, value.Denomination.ToString(),value.ProductName);
 
                     var activation = new Activation("50")
                     {
-                        PhoneNumber = serverResponse.PhoneNumber,
-                        Longitude = repository.Data[serverResponse.SessionId].longitude.ToString(),
-                        Latitude = repository.Data[serverResponse.SessionId].latitude.ToString(),
+                        PhoneNumber = serverResponse.mobileNumber,
+                        Longitude = repository.Data[serverResponse.session_id].longitude.ToString(),
+                        Latitude = repository.Data[serverResponse.session_id].latitude.ToString(),
                         ValueChain = value.ValueChain,
                         VoucherCode = value.VoucherCode,
                         SerialNumber = value.SerialNumber,
@@ -88,16 +88,16 @@ namespace BimaPimaUssd.ViewModels
         {
             get
             {
-                var str = repository.Requests[serverResponse.SessionId].Last.Value;
+                var str = repository.Requests[serverResponse.session_id].Last.Value;
                 if (string.IsNullOrEmpty(str)) return IFVM.InvalidCode;
                 var value = _service.GetByProperty("VoucherCode", str);
                 if (value is not null)
                 {
                     var activation = new Activation("55")
                     {
-                        PhoneNumber = serverResponse.PhoneNumber,
-                        Longitude = repository.Data[serverResponse.SessionId].longitude.ToString(),
-                        Latitude = repository.Data[serverResponse.SessionId].latitude.ToString(),
+                        PhoneNumber = serverResponse.mobileNumber,
+                        Longitude = repository.Data[serverResponse.session_id].longitude.ToString(),
+                        Latitude = repository.Data[serverResponse.session_id].latitude.ToString(),
                         ValueChain = value.ValueChain,
                         VoucherCode = value.VoucherCode,
                         SerialNumber = value.SerialNumber,
