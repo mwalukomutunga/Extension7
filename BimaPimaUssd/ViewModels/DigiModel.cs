@@ -357,14 +357,15 @@ namespace BimaPimaUssd.ViewModels
 
         private string ValidateFarmerCode(string code)
         {
-            PBI value = _repository.GetByProperty("farmercode", code);
-            repository.Data[serverResponse.SessionId].PBI = value;
+            PBI value = _repository.GetByProperty("UniqueCode", code);
+            
             if (value is null)
             {
                 levels.Pop();
                 levels.Push(3);
                 return IFVM.InvalidCode;
             }
+            repository.Data[serverResponse.SessionId].PBI = value;
             return null;
         }
 
