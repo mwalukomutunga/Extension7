@@ -90,7 +90,30 @@ namespace BimaPimaUssd.Models
         public string ProductName { get; set; }
      
     }
-
+    public class FarmerActivation
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        [JsonIgnore]
+        public string? Id { get; set; }
+        public string VC { get; set; }
+        public string PlantingMonth { get; set; }
+        public string PlantingWeek { get; set; }
+        public bool IsExisting { get; set; }
+        public string MainPhoneNumber { get; set; }
+        public string farmercode { get; set; }
+        public string UniqueCode { get; set; }
+        public string farmer_name { get; set; }
+        public string County { get; set; }
+        public string VCID { get; set; }
+        public decimal SubsidyAmount { get; set; }
+        public decimal InsurancePayment { get; set; }
+        public decimal PremiumPaid { get; set; }
+        public int Rate { get; set; }
+        public DateTime DateActivated { get; set; }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
+    }
     public class User
     {
         [BsonId]

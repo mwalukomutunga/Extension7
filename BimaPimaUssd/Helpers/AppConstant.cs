@@ -20,6 +20,8 @@ namespace BimaPimaUssd.Helpers
         public static int PayBill = 697744;
         public static readonly string PassKey = "efa477b21f09a30aed4735658f4a35d736e24a7d53f3a61552501834fce70571";
 
+        public static readonly string Callback = "http://157.230.190.229:6000/api/callback";
+
         public static int GetLastDayOfWeek(int Month, int week)
         {
             return week switch
@@ -62,21 +64,26 @@ namespace BimaPimaUssd.Helpers
 
         internal static string CollectCode() => "CON Enter farmer code.\n";
 
-        internal static string LoadValueChains(string name) => $"CON Cheers {name}!! Select crop\n 1. Maize\n2. Greengrams\n 3. Sorghum\n 4. Beans";
+        internal static string LoadValueChains(string name) => $"CON Hi {name}!! Select crop\n 1. Maize\n2. Greengrams\n 3. Sorghum\n 4. Beans";
 
         internal static string TypeMonth() => "CON Select planting month.\n 1. January\n2. February\n3.March \n4. April \n5. May\n6. June\n7. July\n8.August\n9. September \n10. October \n11. November \n12.December";
 
         internal static string GetWeek() => "CON Select planting week\n 1. 1st week\n2. 2nd week\n3. 3rd week\n4. 4th week\n5. 5th week";
 
         internal static string SelectPayMethod() => $"CON Select payment method.\n 1. Cash\n 2. Mpesa";
-        internal static string ConfirmPay(decimal premium, decimal subsidy,int rate ) => $"CON Confirm. Pay Kes {premium - subsidy } for max KES {premium * rate} payout \n 1. Confirm\n 2. Cancel";
+        internal static string SelectParialPayment() => $"CON Select payment method.\n 1. Pay now\n 2. Pay in bits";
+        internal static string ConfirmPay(decimal premium, decimal subsidy, int rate)
+        {
+            if (premium == 0) return "CON Please enter amount. Premium must be KES 50 and above\n";
+            return $"CON Confirm. Pay Kes {premium - subsidy } for max KES {premium * rate} payout \n 1. Confirm\n 2. Cancel";
+        }
 
         internal static string ProcessCash() => $"END Thank you for using our service. Find more details in your SMS";
         internal static string ProcessCancel() => $"END Thank you for using our service. Feel free to try again.";
 
         internal static string ProcessMpesa() => $"END Thank you\nEnter your MPESA PIN in the next prompt to complete the request";
 
-        internal static string GetAmount() => "CON  Select insurance cover\n 1. Pay Kes 200 for max KES 2000 payout\n 2. Pay amount above Kes 200";
+        internal static string GetAmount(string Amount) => $"CON  Select insurance cover\n 1. Pay Kes {Amount} for max KES 2000 payout\n 2. Pay amount above Kes 200";
         internal static string GetPhone(string phone) => $"CON Select phone number to pay\n 1. {phone}\n 2. Enter new number.";
 
         internal static string EnterMpesaNo() => "CON ENter phone number";
@@ -97,6 +104,10 @@ namespace BimaPimaUssd.Helpers
         internal static string Village => "CON Please enter your village name";
 
         internal static string Ward => "CON Please enter your ward";
+
+        internal static string PayCustom() => "CON Please enter the amount to pay.(More than KES 50)";
+
+        internal static string ProcessCash(string amout) => $"END Kindly pay  KES {amout} to the VC and plan to clear the remaining amount for max cover";
 
         internal static string SubCounty => "CON Please enter your sub county";
         #endregion Common
@@ -160,6 +171,9 @@ namespace BimaPimaUssd.Helpers
         internal static string ActivationSms => "Dear customer, thank you for activating your crop insurance cover.";
 
         internal static string FailedPaymentOnActivation => "END Kindly note that the payment has not been activated";
+
+        public static string InvalidAmount =>  "CON Invalid amount. Premium must be more than 50\n Please try again";
+
         internal static string BimaActions(string name) => $"CON Welcome { name} \n Reply with\n 1. Buy Bima pima insurance \n 2. Activate Bima pima insurance \n 3 .Top up your Bima insurance.\n";
         //internal static string LoadClaims(ActivePolicy policy, Common common) => policy is null ? "END Could not find the claim." : common.ProcessClaims(policy.Order_no);
         //internal static string LoadCropCovers(InsuranceProduct item) => $"CON Select cover\n1. Pay KES 50 for max KES {50 * item.Premium_rate} payout\n2. Pay KES 100 for max KES {100 * item.Premium_rate} payout\n3. Pay KES 500 for max KES {500 * item.Premium_rate} payout\n4. Pay above KES 500\n";

@@ -23,7 +23,7 @@ namespace BimaPimaUssd.Models
             TransactionType = "CustomerPayBillOnline";
             PartyA = phoneNumber;
             PhoneNumber = phoneNumber;
-            CallBackURL = "http://157.230.190.229:5052/api/callback";
+            CallBackURL = AppConstant.Callback;
             AccountReference = reference;
             TransactionDesc = "Activation payment";
 
