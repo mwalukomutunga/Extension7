@@ -20,7 +20,7 @@ namespace BimaPimaUssd.Helpers
         public static int PayBill = 697744;
         public static readonly string PassKey = "efa477b21f09a30aed4735658f4a35d736e24a7d53f3a61552501834fce70571";
 
-        public static readonly string Callback = "http://157.230.190.229:6000/api/callback";
+        public static readonly string Callback = "http://157.230.190.229:5080/api/callback";
 
         public static int GetLastDayOfWeek(int Month, int week)
         {
