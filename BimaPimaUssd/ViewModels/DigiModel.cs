@@ -130,7 +130,7 @@ namespace BimaPimaUssd.ViewModels
                 {
                     if (decimal.TryParse(repository.Requests[serverResponse.session_id].Last.Value, out value) && repository.Data[serverResponse.session_id].IsCustom) ;
                     {
-                        if (value < 50)
+                        if (value < 40)
                         {
                             levels.Pop();
                             levels.Push(9);
@@ -200,7 +200,7 @@ namespace BimaPimaUssd.ViewModels
         private decimal ValidateAMount()
         {
             var val = Convert.ToDecimal(repository.Requests[serverResponse.session_id].Last.Value);
-            if (val < 50)
+            if (val < 40)
             {
                 repository.Data[serverResponse.session_id].IsSetWeek = true;
                 levels.Pop();
@@ -319,7 +319,9 @@ namespace BimaPimaUssd.ViewModels
                 //add prompt to mpesa
                 SaveFarmerActivation();
                 //save record
-                Payment.SendPayment(repository.Requests[serverResponse.session_id].Last.Value.ToString(), Convert.ToDecimal(repository.Data[serverResponse.session_id].Premium).ToString(), "Bima pima");
+                var phone = repository.Requests[serverResponse.session_id].Last.Value.ToString();
+                if(phone.StartsWith("0")) phone = "254"+ phone.Substring(1);
+                Payment.SendPayment(phone, Convert.ToDecimal(repository.Data[serverResponse.session_id].Premium).ToString(), "Bima pima");
                 return IFVM.ProcessMpesa();
             }
         }

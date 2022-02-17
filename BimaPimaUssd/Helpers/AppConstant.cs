@@ -42,8 +42,8 @@ namespace BimaPimaUssd.Helpers
     {
         #region 70
 
-        public static string Invalid => "END Inavid entry. Please try again.";
-        public static string InvalidCode => "CON Inavid farmer code. Please try again.";
+        public static string Invalid => "END Invalid entry. Please try again.";
+        public static string InvalidCode => "CON Invalid farmer code. Please try again with a .";
 
         //common
         internal static string ThankFarmer()
@@ -51,7 +51,7 @@ namespace BimaPimaUssd.Helpers
             throw new NotImplementedException();
         }
 
-        internal static string CheckExisting() => "CON Welcome to our service.\n1.Existing farmer.\n2. New farmer";
+        internal static string CheckExisting() => "CON Welcome to Acre Africa insurance selling channel.\n1.Existing farmer.\n2. New farmer";
         internal static string CheckWelcome() => "CON Welcome back\n 1. Continue";
 
 
@@ -62,11 +62,11 @@ namespace BimaPimaUssd.Helpers
         }
 
 
-        internal static string CollectCode() => "CON Enter farmer code.\n";
+        internal static string CollectCode() => "CON Enter the 5 digit farmer unique code.\n";
 
-        internal static string LoadValueChains(string name) => $"CON Hi {name}!! Select crop\n1. Maize\n2. Greengrams\n3. Sorghum\n4. Beans";
+        internal static string LoadValueChains(string name) => $"CON You are selling to {name}!! Select crop to cover\n1. Maize\n2. Greengrams\n3. Sorghum\n4. Beans";
 
-        internal static string TypeMonth() => "CON Select planting month.\n 1. January\n2. February\n3.March \n4. April \n5. May\n6. June\n7. July\n8.August\n9. September \n10. October \n11. November \n12.December";
+        internal static string TypeMonth() => "CON Select planting month.\n2. February\n3.March \n4. April";
 
         internal static string GetWeek() => "CON Select planting week\n 1. 1st week\n2. 2nd week\n3. 3rd week\n4. 4th week\n5. 5th week";
 
@@ -74,7 +74,7 @@ namespace BimaPimaUssd.Helpers
         internal static string SelectParialPayment() => $"CON Select payment method.\n 1. Pay now\n 2. Pay in bits";
         internal static string ConfirmPay(decimal premium, decimal subsidy, int rate)
         {
-            if (premium == 0) return "CON Please enter amount. Premium must be KES 50 and above\n";
+            if (premium == 0) return "CON Please enter amount. Premium must be KES 40 and above\n";
             return $"CON Confirm. Pay Kes {premium - subsidy } for max KES {premium * rate} payout \n 1. Confirm\n 2. Cancel";
         }
         internal static string ProcessCash() => $"END Thank you for using our service. Find more details in your SMS";
@@ -85,7 +85,7 @@ namespace BimaPimaUssd.Helpers
         internal static string GetAmount(decimal Amount) => $"CON  Select insurance cover\n 1. Pay Kes {200 - Amount} for max KES 2000 payout\n 2. Pay amount above Kes 200";
         internal static string GetPhone(string phone) => $"CON Select phone number to pay\n 1. {phone}\n 2. Enter new number.";
 
-        internal static string EnterMpesaNo() => "CON ENter phone number";
+        internal static string EnterMpesaNo() => "CON Enter phone number";
         #endregion 70
 
 
@@ -171,7 +171,7 @@ namespace BimaPimaUssd.Helpers
 
         internal static string FailedPaymentOnActivation => "END Kindly note that the payment has not been activated";
 
-        public static string InvalidAmount =>  "CON Invalid amount. Premium must be more than 50\n Please try again";
+        public static string InvalidAmount =>  "CON Invalid amount. Premium must be more than 40\n Please try again";
 
         internal static string BimaActions(string name) => $"CON Welcome { name} \n Reply with\n 1. Buy Bima pima insurance \n 2. Activate Bima pima insurance \n 3 .Top up your Bima insurance.\n";
         //internal static string LoadClaims(ActivePolicy policy, Common common) => policy is null ? "END Could not find the claim." : common.ProcessClaims(policy.Order_no);
