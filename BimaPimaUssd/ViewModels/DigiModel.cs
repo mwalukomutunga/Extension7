@@ -16,6 +16,7 @@ namespace BimaPimaUssd.ViewModels
         private readonly Stack<int> levels;
         private readonly Repository<PBI> _repository;
         readonly Repository<FarmerActivation> _service;
+        readonly Repository<VC> _VC;
 
         public string _Name { get; }
         public FTMAModel(ServerResponse serverResponse, IRepository repository, IPayment paymnt, IStoreDatabaseSettings settings)
@@ -25,7 +26,8 @@ namespace BimaPimaUssd.ViewModels
             this.repository = repository;
             Payment = paymnt;
             levels = repository.levels[serverResponse.session_id];
-            _repository = new Repository<PBI>(settings, "PBIBioData");
+            _repository = new Repository<PBI>(settings, "PBIData");
+            _VC = new Repository<VC>(settings, "VCData");
             _service = new Repository<FarmerActivation>(settings, "FarmerActivation");
         }
         public string MainMenu => levels.Pop() switch
@@ -48,6 +50,7 @@ namespace BimaPimaUssd.ViewModels
             15 => EnterCustomPhone,
             16 => PartialPay,
             17 => ProcessPartialPay,
+            18 => CheckVC,
             _ => IFVM.Invalid
         };
 
@@ -56,7 +59,9 @@ namespace BimaPimaUssd.ViewModels
         {
             get
             {
-                levels.Push(1);
+                bool IsFirstTime = _VC.GetByProperty("Phone", serverResponse.mobileNumber) is null;
+                if(IsFirstTime) levels.Push(18);
+                else levels.Push(1);
                 return IFVM.CheckWelcome();
             }
         }
@@ -65,9 +70,30 @@ namespace BimaPimaUssd.ViewModels
             get
             {
                 levels.Push(2);
+                bool IsFirstTime = _VC.GetByProperty("Phone", serverResponse.mobileNumber) is null;
+                if (IsFirstTime)
+                {
+                    var str = ValidatePhone();
+                    if (str is not null) return str;
+                }
+
                 return IFVM.CheckExisting();
             }
         }
+
+        private string ValidatePhone()
+        {
+            var vc = repository.Requests[serverResponse.session_id].Last.Value;
+            if (_repository.GetByProperty("VCID", vc.ToUpper()) is not null)
+            {             
+                levels.Pop();
+                levels.Push(2);
+                return IFVM.InvalidVC;
+            }
+            _VC.InsertRecord(new VC { Phone = serverResponse.mobileNumber });
+            return null;
+        }
+
         private string ChooseFarmerType
         {
             get
@@ -114,7 +140,7 @@ namespace BimaPimaUssd.ViewModels
         {
             get
             {
-                levels.Push(6);
+                levels.Push(10);
                 repository.Data[serverResponse.session_id].Month = repository.Requests[serverResponse.session_id].Last.Value.Trim().ToString();
                 return IFVM.GetWeek();
             }
@@ -181,11 +207,8 @@ namespace BimaPimaUssd.ViewModels
             get
             {
                 levels.Push(16);
-                return IFVM.ConfirmPay(repository.Requests[serverResponse.session_id].Last.Value switch
-                {
-                    "1" => ProcessAmount(),
-                    _ => ValidateAMount() 
-                }, GetSubsidy(), 10); 
+                repository.Data[serverResponse.session_id].Week = repository.Requests[serverResponse.session_id].Last.Value.Trim().ToString();
+                return IFVM.ConfirmPay(ProcessAmount(), GetSubsidy(), 10); 
             }
         }
 
@@ -323,6 +346,15 @@ namespace BimaPimaUssd.ViewModels
                 if(phone.StartsWith("0")) phone = "254"+ phone.Substring(1);
                 Payment.SendPayment(phone, Convert.ToDecimal(repository.Data[serverResponse.session_id].Premium).ToString(), "Bima pima");
                 return IFVM.ProcessMpesa();
+            }
+        }
+
+        public string CheckVC
+        {
+            get
+            {
+                levels.Push(1);
+                return IFVM.EnterVCode();
             }
         }
 

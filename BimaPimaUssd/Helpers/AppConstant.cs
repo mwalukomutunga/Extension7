@@ -82,7 +82,7 @@ namespace BimaPimaUssd.Helpers
 
         internal static string ProcessMpesa() => $"END Thank you\nEnter your MPESA PIN in the next prompt to complete the request";
 
-        internal static string GetAmount(decimal Amount) => $"CON  Select insurance cover\n 1. Pay Kes {200 - Amount} for max KES 2000 payout\n 2. Pay amount above Kes 200";
+        internal static string GetAmount(decimal Amount) => $"CON  Select insurance cover\n 1. Pay Kes {200 - Amount} for max KES 2000 payout.";
         internal static string GetPhone(string phone) => $"CON Select phone number to pay\n 1. {phone}\n 2. Enter new number.";
 
         internal static string EnterMpesaNo() => "CON Enter phone number";
@@ -130,7 +130,7 @@ namespace BimaPimaUssd.Helpers
         public static string SelectCenter => "CON Please select collection center\n";
         public static string CustomAmount => "CON Enter the amount to pay in KES\n";
         public static string ConfirmCustomAmount(string curr, string currAmount, string crop, string purchasePrice) => $"CON Confirm pay {curr} {currAmount} now for {crop} worth KES {purchasePrice}\n1. Confirm\n2. Cancel";
-        public static string Week => "CON Select Week of Month \n1. 1st Week \n2. 2nd Week \n3. 3rd Week \n4. 4th Week\n";
+        public static string Week => "CON Select Week of Month\n1. 1st Week \n2. 2nd Week \n3. 3rd Week \n4. 4th Week\n";
         public static string Pay => "CON Pay for this order \n1. Pay now \n2. Pay in bits \n3. Cancel\n";
         public static string GetConfirmOrder(int NoOfPacs, string crop, string type, string currency, string amount) => $"CON Confirm Buy {NoOfPacs} packet(s) of {type} {crop} worth {currency} {amount}\n1. Yes\n2. No";
         public static string GetSelectPackage(string package, string unit) => $"CON Please enter the quantity of {package} {unit} packets you would like to purchase\n";
@@ -162,6 +162,9 @@ namespace BimaPimaUssd.Helpers
         internal static string PolicyOptionsMsg => $"CON What would like to do?\n1. View order details.\n2. View claims\n";
         internal static string PolictCover => "CON Select one of these crops for the cover.\n";
         internal static string ActivationCodeMsg => "CON Enter your 6-digit activation code.\n";
+
+        internal static string EnterVCode() => "CON Enter VC code";
+
         internal static string ValidCodeMsg => "CON Invalid code! Please try again.";
         internal static string ExpiredCoverMsg => $"END Sorry, this cover is expired";
         internal static string RestError => "END Internal error occured. Kindly try again later.";
@@ -172,6 +175,8 @@ namespace BimaPimaUssd.Helpers
         internal static string FailedPaymentOnActivation => "END Kindly note that the payment has not been activated";
 
         public static string InvalidAmount =>  "CON Invalid amount. Premium must be more than 40\n Please try again";
+
+        public static string InvalidVC => "CON Invalid VC code. Please try again";
 
         internal static string BimaActions(string name) => $"CON Welcome { name} \n Reply with\n 1. Buy Bima pima insurance \n 2. Activate Bima pima insurance \n 3 .Top up your Bima insurance.\n";
         //internal static string LoadClaims(ActivePolicy policy, Common common) => policy is null ? "END Could not find the claim." : common.ProcessClaims(policy.Order_no);

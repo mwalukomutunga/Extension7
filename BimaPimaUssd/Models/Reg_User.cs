@@ -41,7 +41,15 @@ namespace BimaPimaUssd.Models
         public string Longitude { get; set; }
 
     }
-    public class PBI
+    public class VC
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        [JsonIgnore]
+        public string? Id { get; set; }
+        public string Phone { get; set; }
+    }
+        public class PBI
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -49,10 +57,18 @@ namespace BimaPimaUssd.Models
         public string? Id { get; set; }
         [JsonPropertyName("County")]
         public string County { get; set; }
-        [JsonPropertyName("VC ID")]
+        [JsonPropertyName("Ward")]
+        public string Ward { get; set; }
+        [JsonPropertyName("SubCounty")]
+        public string SubCounty { get; set; }
+        [JsonPropertyName("VCID")]
         public string VCID { get; set; }
         [JsonPropertyName("VC")]
         public string VC { get; set; }
+        [JsonPropertyName("InsuranceType")]
+        public string InsuranceType { get; set; }
+        [JsonPropertyName("SeedsType")]
+        public string SeedsType { get; set; }
         [JsonPropertyName("farmerCode")]
         public string farmercode { get; set; }
         [JsonPropertyName("UniqueCode")]

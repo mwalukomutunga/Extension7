@@ -14,7 +14,7 @@ namespace BimaPimaUssd.Controllers
         readonly Repository<PBI> _service;
         public PbiController(IStoreDatabaseSettings settings)
         {
-            _service = new Repository<PBI>(settings, "PBIBioData");
+            _service = new Repository<PBI>(settings, "PBIData");
         }
 
         [HttpGet]
