@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 
 namespace BimaPimaUssd.Helpers
 {
@@ -20,8 +21,8 @@ namespace BimaPimaUssd.Helpers
         public static int PayBill = 697744;
         public static readonly string PassKey = "efa477b21f09a30aed4735658f4a35d736e24a7d53f3a61552501834fce70571";
 
-        //public static readonly string Callback = "http://157.230.190.229:5080/api/callback";
-        public static readonly string Callback = "https://b067-197-155-81-10.ngrok.io/api/callback";
+        public static readonly string Callback = "http://157.230.190.229:5080/api/callback";
+        //public static readonly string Callback = "https://b067-197-155-81-10.ngrok.io/api/callback";
 
         public static int GetLastDayOfWeek(int Month, int week)
         {
@@ -36,6 +37,12 @@ namespace BimaPimaUssd.Helpers
             };
 
 
+        }
+        public static T getValue<T>(string json, string jsonPropertyName)
+        {
+            var parsedResult = JObject.Parse(json);
+
+            return parsedResult.SelectToken(jsonPropertyName).ToObject<T>();
         }
     }
    
