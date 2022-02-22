@@ -45,7 +45,6 @@ namespace BimaPimaUssd.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        [JsonIgnore]
         public string? Id { get; set; }
         public string Phone { get; set; }
         public string County { get; set; }

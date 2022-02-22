@@ -114,8 +114,19 @@ namespace BimaPimaUssd.ViewModels
             get
             {
                 levels.Push(4);
+                PBI pbi;
                 var value = ValidateFarmerCode(repository.Requests[serverResponse.session_id].Last.Value.Trim().ToString());
-                var pbi = (PBI)repository.Data[serverResponse.session_id].PBI;
+                try
+                {
+                     pbi = (PBI)repository.Data[serverResponse.session_id].PBI;
+                }
+                catch (Exception)
+                {
+
+                    levels.Pop();
+                    levels.Push(3);
+                    return IFVM.InvalidCode;
+                }
                 return value is null ? IFVM.LoadValueChains(pbi.farmer_name) : value.ToString();
             }
         }

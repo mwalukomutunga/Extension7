@@ -25,7 +25,7 @@ namespace BimaPimaUssd.Controllers
         public CardController(IStoreDatabaseSettings settings)
         {
             _service = new Repository<CardsSerial>(settings, "CardsSerial");
-            _MpesaService = new Repository<stkCallback>(settings, "ActivationPayment");
+            _MpesaService = new Repository<stkCallback>(settings, "Payments70");
         }
 
         [HttpGet]

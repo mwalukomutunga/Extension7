@@ -51,7 +51,7 @@ namespace BimaPimaUssd.Helpers
         #region 70
 
         public static string Invalid => "END Invalid entry. Please try again.";
-        public static string InvalidCode => "CON Invalid farmer code. Please try again with a .";
+        public static string InvalidCode => "CON Invalid farmer code. Please try again.";
 
         //common
         internal static string ThankFarmer()
@@ -185,7 +185,7 @@ namespace BimaPimaUssd.Helpers
 
         public static string InvalidAmount =>  "CON Invalid amount. Premium must be more than 40\n Please try again";
 
-        public static string InvalidVC => "CON Invalid VC code. Please try again";
+        public static string InvalidVC => "CON Invalid chambion Id. Please try again";
 
         internal static string BimaActions(string name) => $"CON Welcome { name} \n Reply with\n 1. Buy Bima pima insurance \n 2. Activate Bima pima insurance \n 3 .Top up your Bima insurance.\n";
         //internal static string LoadClaims(ActivePolicy policy, Common common) => policy is null ? "END Could not find the claim." : common.ProcessClaims(policy.Order_no);

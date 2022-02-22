@@ -14,7 +14,7 @@ namespace BimaPimaUssd.Controllers
         readonly Repository<stkCallback> _service;
         public PaymentController(IStoreDatabaseSettings settings)
         {
-            _service = new Repository<stkCallback>(settings, "ActivationPayment");
+            _service = new Repository<stkCallback>(settings, "Payments70");
         }
 
         [HttpGet]
