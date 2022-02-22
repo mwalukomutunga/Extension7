@@ -4,12 +4,12 @@ using BimaPimaUssd.Models;
 using BimaPimaUssd.Repository;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BimaPimaUssd.ViewModels
 {
     public class FTMAModel
     {
-
         private readonly ServerResponse serverResponse;
         private readonly IRepository repository;
         private readonly IPayment Payment;
@@ -27,7 +27,8 @@ namespace BimaPimaUssd.ViewModels
             Payment = paymnt;
             levels = repository.levels[serverResponse.session_id];
             _repository = new Repository<PBI>(settings, "PBIData");
-            _VC = new Repository<VC>(settings, "VCData");
+            _VC = new Repository<VC>(settings, "VCData700");
+            //_VC = new Repository<VC>(settings, "VCData7001"); test
             _service = new Repository<FarmerActivation>(settings, "FarmerActivation");
         }
         public string MainMenu => levels.Pop() switch
@@ -40,7 +41,7 @@ namespace BimaPimaUssd.ViewModels
             5 => GetWeek,
             6 => EnterAmount,
             7 => EnterPhone,
-            8 => ProcessMpesaPayment,
+            8 => GetProcessMpesaPayment().Result,
             9 => Pay,
             10 => ConfirmPay,
             11 => ConfirmPayOptions,
@@ -51,6 +52,7 @@ namespace BimaPimaUssd.ViewModels
             16 => PartialPay,
             17 => ProcessPartialPay,
             18 => CheckVC,
+            19 => InputNo,
             _ => IFVM.Invalid
         };
 
@@ -76,7 +78,6 @@ namespace BimaPimaUssd.ViewModels
                     var str = ValidatePhone();
                     if (str is not null) return str;
                 }
-
                 return IFVM.CheckExisting();
             }
         }
@@ -84,13 +85,14 @@ namespace BimaPimaUssd.ViewModels
         private string ValidatePhone()
         {
             var vc = repository.Requests[serverResponse.session_id].Last.Value;
-            if (_repository.GetByProperty("VCID", vc.ToUpper()) is not null)
+            PBI pbi = _repository.GetByProperty("VCID", vc.ToUpper());
+            if (pbi is null)
             {             
                 levels.Pop();
-                levels.Push(2);
+                levels.Push(1);
                 return IFVM.InvalidVC;
             }
-            _VC.InsertRecord(new VC { Phone = serverResponse.mobileNumber });
+            _VC.InsertRecord(new VC { Phone = serverResponse.mobileNumber, County = pbi .County});
             return null;
         }
 
@@ -122,7 +124,8 @@ namespace BimaPimaUssd.ViewModels
             get
             {
                 levels.Push(4);
-                return IFVM.LoadValueChains(serverResponse.mobileNumber);
+                repository.Data[serverResponse.session_id].Phone = repository.Requests[serverResponse.session_id].Last.Value;
+                return IFVM.LoadValueChains(repository.Data[serverResponse.session_id].Phone);
             }
         }
 
@@ -322,31 +325,32 @@ namespace BimaPimaUssd.ViewModels
                 levels.Push(8);
                 return repository.Requests[serverResponse.session_id].Last.Value switch
                 {
-                    "1" => GetProcessMpesaPayment(serverResponse.mobileNumber),
+                    "1" => GetProcessMpesaPayment(serverResponse.mobileNumber).Result,
                     "2" => IFVM.EnterMpesaNo(),
                     _ => IFVM.Invalid
                 };
             }
         }
 
-        public string GetProcessMpesaPayment(string phone)
+        public async Task<string> GetProcessMpesaPayment(string phone)
         {///
             //add prompt to mpesa
-            Payment.SendPayment(phone, Convert.ToDecimal(repository.Data[serverResponse.session_id].Premium).ToString(), "Bima pima");
-            return IFVM.ProcessMpesa();
+             var mpesares = await Payment.SendPayment(phone, Convert.ToDecimal(repository.Data[serverResponse.session_id].Premium).ToString(), "Bima pima");
+            //var mpesares =  await Payment.SendPayment(phone, 1.ToString(), "Bima pima");
+            SaveFarmerActivation(mpesares);
+            return await Task.FromResult(IFVM.ProcessMpesa());
         }
-        public string ProcessMpesaPayment
+
+        public async Task<string> GetProcessMpesaPayment()
         {
-            get
-            {
-                //add prompt to mpesa
-                SaveFarmerActivation();
-                //save record
-                var phone = repository.Requests[serverResponse.session_id].Last.Value.ToString();
-                if(phone.StartsWith("0")) phone = "254"+ phone.Substring(1);
-                Payment.SendPayment(phone, Convert.ToDecimal(repository.Data[serverResponse.session_id].Premium).ToString(), "Bima pima");
-                return IFVM.ProcessMpesa();
-            }
+            //add prompt to mpesa
+
+            //save record
+            var phone = repository.Requests[serverResponse.session_id].Last.Value.ToString();
+            if (phone.StartsWith("0")) phone = "254" + phone.Substring(1);
+            var payment = await Payment.SendPayment(phone, Convert.ToDecimal(repository.Data[serverResponse.session_id].Premium).ToString(), "Bima pima");
+            SaveFarmerActivation(payment);
+            return await Task.FromResult(IFVM.ProcessMpesa());
         }
 
         public string CheckVC
@@ -358,7 +362,16 @@ namespace BimaPimaUssd.ViewModels
             }
         }
 
-        private void SaveFarmerActivation()
+        public string InputNo
+        {
+            get
+            {
+                levels.Push(14);
+                return IFVM.EnterFarmerPhone();
+            }
+        }
+
+        private void SaveFarmerActivation(PaymentConfirmartion mpesaPayment = null)
         {
             PBI pbi;
             if (repository.Data[serverResponse.session_id].Existing)
@@ -372,7 +385,7 @@ namespace BimaPimaUssd.ViewModels
                 PlantingMonth = repository.Data[serverResponse.session_id].Month,
                 PlantingWeek = repository.Data[serverResponse.session_id].Week,
                 IsExisting = repository.Data[serverResponse.session_id].Existing,
-                MainPhoneNumber = serverResponse.mobileNumber,
+                MainPhoneNumber = (bool)repository.Data[serverResponse.session_id].Existing? serverResponse.mobileNumber: repository.Data[serverResponse.session_id].Phone,
                 farmercode = pbi.farmercode,
                 UniqueCode = pbi.UniqueCode,
                 farmer_name = pbi.farmer_name,
@@ -385,6 +398,7 @@ namespace BimaPimaUssd.ViewModels
                 DateActivated = DateTime.Now,
                 Longitude = repository.Data[serverResponse.session_id].longitude.ToString(),
                 Latitude = repository.Data[serverResponse.session_id].latitude.ToString(),
+                MpesaRequest = mpesaPayment
             };
             _service.InsertRecord(record);
         }
@@ -405,8 +419,9 @@ namespace BimaPimaUssd.ViewModels
 
         private string ProcessNew()
         {
+            
             repository.Data[serverResponse.session_id].Existing = false; 
-            return ProcessValueChains;
+            return InputNo;
         }
 
         private string ProcessExisting()

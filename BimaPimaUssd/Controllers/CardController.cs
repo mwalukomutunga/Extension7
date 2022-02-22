@@ -3,9 +3,15 @@ using BimaPimaUssd.Models;
 using BimaPimaUssd.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace BimaPimaUssd.Controllers
 {
@@ -15,11 +21,11 @@ namespace BimaPimaUssd.Controllers
     public class CardController : ControllerBase
     {
         readonly Repository<CardsSerial> _service;
-        readonly Repository<stkCallback> _MpesaService;
+        readonly Repository<Body> _MpesaService;
         public CardController(IStoreDatabaseSettings settings)
         {
             _service = new Repository<CardsSerial>(settings, "CardsSerial");
-            _MpesaService = new Repository<stkCallback>(settings, "ActivationPayment");
+            _MpesaService = new Repository<Body>(settings, "ActivationPayment");
         }
 
         [HttpGet]
@@ -27,10 +33,17 @@ namespace BimaPimaUssd.Controllers
             _service.Get();
 
         [HttpPost("/api/callback")]
-        public IActionResult Callback(stkCallback record)
-        
+        public async Task<IActionResult> CallbackAsync(HttpResponseMessage response)
+
         {
-            _MpesaService.InsertRecord(new stkCallback());            
+            var res = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<Body>(res);
+           if(result != null)
+                _MpesaService.InsertRecord(result);
+            //HttpResponseMessage response = await client.PostAsync(url, data);
+            //var res = await response.Content.ReadAsStringAsync();
+            //var newObject = response.IsSuccessStatusCode ? JsonConvert.DeserializeObject<T>(res) : default;
+
             return Ok();
         }
 

@@ -48,6 +48,7 @@ namespace BimaPimaUssd.Models
         [JsonIgnore]
         public string? Id { get; set; }
         public string Phone { get; set; }
+        public string County { get; set; }
     }
         public class PBI
     {
@@ -129,6 +130,7 @@ namespace BimaPimaUssd.Models
         public DateTime DateActivated { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
+        public PaymentConfirmartion MpesaRequest { get; set; }
     }
     public class User
     {

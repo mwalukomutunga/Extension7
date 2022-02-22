@@ -20,7 +20,8 @@ namespace BimaPimaUssd.Helpers
         public static int PayBill = 697744;
         public static readonly string PassKey = "efa477b21f09a30aed4735658f4a35d736e24a7d53f3a61552501834fce70571";
 
-        public static readonly string Callback = "http://157.230.190.229:5080/api/callback";
+        //public static readonly string Callback = "http://157.230.190.229:5080/api/callback";
+        public static readonly string Callback = "https://b067-197-155-81-10.ngrok.io/api/callback";
 
         public static int GetLastDayOfWeek(int Month, int week)
         {
@@ -104,7 +105,7 @@ namespace BimaPimaUssd.Helpers
 
         internal static string Ward => "CON Please enter your ward";
 
-        internal static string PayCustom() => "CON Please enter the amount to pay.(More than KES 50)";
+        internal static string PayCustom() => "CON Please enter the amount to pay.(More than KES 40)";
 
         internal static string ProcessCash(string amout) => $"END Kindly pay  KES {amout} to the VC and plan to clear the remaining amount for max cover";
 
@@ -155,7 +156,7 @@ namespace BimaPimaUssd.Helpers
         internal static string BimaWelcomeMsg => $"CON Welcome to Acre africa.\n1. Insured farm inputs\n2. Bima pima insurance\n 3. Farmer's account\n 4. Farming advice\n5. Input financing";
        // internal static string PayMsg(string amount, InsuranceProduct item) => $"CON Confirm pay for first installment of KES {amount} for {item.Crop} for a maximum payout of KES {int.Parse(amount) * item.Premium_rate} incase of extreme weather events.\n1. Pay now\n2. Pay in bits";
        // internal static string ProcessCancel => "END Thank you for using our service. Welcome again";
-        internal static string BitsMsg => "CON Enter amount(KES), start with KES 50 or more\n";
+        internal static string BitsMsg => "CON Enter amount(KES), start with KES 40 or more\n";
         internal static string FinalizePayment => $"END Thank you. Please enter mpesa pin on the next prompt.\n";
         internal static string Weeks => "CON Select Week of Month \n1. 1st Week \n2. 2nd Week \n3. 3rd Week \n4. 4th Week\n";
         internal static string PolicyDetailsMsg => "END Thank you for using our service.\nAn SMS about this order will be send to you.\n";
@@ -163,7 +164,8 @@ namespace BimaPimaUssd.Helpers
         internal static string PolictCover => "CON Select one of these crops for the cover.\n";
         internal static string ActivationCodeMsg => "CON Enter your 6-digit activation code.\n";
 
-        internal static string EnterVCode() => "CON Enter VC code";
+        internal static string EnterVCode() => "CON Enter Champion ID";
+        internal static string EnterFarmerPhone() => "CON Enter farmer mobile number";
 
         internal static string ValidCodeMsg => "CON Invalid code! Please try again.";
         internal static string ExpiredCoverMsg => $"END Sorry, this cover is expired";

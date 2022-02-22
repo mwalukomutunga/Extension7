@@ -64,7 +64,7 @@ namespace BimaPimaUssd.Helpers
              .Add(new MediaTypeWithQualityHeaderValue(AppConstant.Header));
             var json = JsonConvert.SerializeObject(payload);
             var data = new StringContent(json, Encoding.UTF8, AppConstant.Header);
-            var response = await client.PostAsync(url, data);
+            HttpResponseMessage response = await client.PostAsync(url, data);
             var res = await response.Content.ReadAsStringAsync();
             var newObject = response.IsSuccessStatusCode ? JsonConvert.DeserializeObject<T>(res) : default;
             var error = !response.IsSuccessStatusCode ? JsonConvert.DeserializeObject<Error>(await response.Content.ReadAsStringAsync()) : default;

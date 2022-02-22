@@ -36,7 +36,7 @@ namespace BimaPimaUssd.Repository
         }
         public async Task<dynamic> SendPayment(string phone, string amount,string reference)
         {
-            return await helper.ProcessPostRequest<string, MpesaPayment>(token:GetToken(ConsumerKey, ConsumerSecret).Result, AppConstant.PushSTKEP, payload: new MpesaPayment(amount, phone, DateTime.Now, reference));
+            return await helper.ProcessPostRequest<PaymentConfirmartion, MpesaPayment>(token:GetToken(ConsumerKey, ConsumerSecret).Result, AppConstant.PushSTKEP, payload: new MpesaPayment(amount, phone, DateTime.Now, reference));
         }
 
         private async Task<string> GetToken(string key, string secret)
